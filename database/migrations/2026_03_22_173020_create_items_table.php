@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('starting_bid', 10, 2);
             $table->decimal('winning_bid', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);
-            $table->timestamp('start_date');
+            $table->timestamp('start_date')->useCurrent();
             $table->timestamp('end_date');
             $table->timestamps();
         });

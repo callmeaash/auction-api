@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class ItemResource extends JsonResource
 {
@@ -20,15 +21,13 @@ class ItemResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'category' => $this->category,
-            'image' => $this->image,
+            'image_url' => $this->image ? Storage::disk('public')->url($this->image) : null,
             'starting_bid' => $this->starting_bid,
-            'start_date' => $this->start_date->format('Y-m-d'),
-            'end_date' => $this->end_date->format('Y-m-d'),
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'is_active' => $this->is_active,
             'user' => new UserResource($this->whenLoaded('user')),
             'is_favorited' => $this->whenHas('is_favorited', fn() => (bool) $this->is_favorited),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

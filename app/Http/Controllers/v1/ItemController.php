@@ -86,12 +86,23 @@ class ItemController extends Controller
     {
         $validated = $request->validated();
         $validated['user_id'] = auth('sanctum')->id();
+
+        if($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('items', 'public');
+        }
+
+        $validated['end_date'] = now()->addDays((int) $request->duration);
         $item = Item::create($validated);
         return $this->success(new ItemResource($item), 'Item created successfully');
     }
 
     /**
-     * Display the specified resource.
+     * Display an item.
+     * 
+     * @unauthenticated
+     * 
+     * @param Item $item The item to display.
+     * @return JsonResponse Returns the item.
      */
     public function show(Item $item)
     {

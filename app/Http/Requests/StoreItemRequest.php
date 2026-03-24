@@ -30,8 +30,8 @@ class StoreItemRequest extends FormRequest
             'category' => ['required', 'string', new Enum(Category::class)],
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'starting_bid' => 'required|numeric|min:1',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'start_date' => 'sometimes|date',
+            'duration' => 'required|integer|min:1|max:30',
         ];
     }
 }
