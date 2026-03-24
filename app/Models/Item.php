@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Comment;
 use App\Models\Bid;
 use App\Models\Report;
+use App\Category;
 
 class Item extends Model
 {
@@ -27,6 +28,16 @@ class Item extends Model
         'starting_bid',
         'start_date',
         'end_date',
+    ];
+
+    protected $casts = [
+        'starting_bid' => 'decimal:2',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'is_active' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'category' => Category::class,
     ];
 
     public function user(): BelongsTo

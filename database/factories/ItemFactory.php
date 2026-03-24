@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Category;
 
 /**
  * @extends Factory<Item>
@@ -23,7 +24,7 @@ class ItemFactory extends Factory
             'winner_id' => null,
             'title' => fake()->sentence(3),
             'description' => fake()->paragraph(),
-            'category' => fake()->word(),
+            'category' => fake()->randomElement(Category::cases())->value,
             'image' => fake()->imageUrl(),
             'starting_bid' => fake()->randomFloat(2, 10, 1000),
             'winning_bid' => null,

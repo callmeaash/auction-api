@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
+use App\Category;
 
 class StoreItemRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +25,13 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => ['required', 'string', new Enum(Category::class)],
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'starting_bid' => 'required|numeric|min:1',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
         ];
     }
 }

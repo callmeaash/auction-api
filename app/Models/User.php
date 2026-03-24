@@ -38,6 +38,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_active' => 'boolean',
@@ -60,7 +62,7 @@ class User extends Authenticatable
         return $this->hasMany(Bid::class);
     }
 
-    public function wishlist(): BelongsToMany
+    public function wishlists(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'wishlists');
     }
