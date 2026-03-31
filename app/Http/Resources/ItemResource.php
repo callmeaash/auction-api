@@ -23,6 +23,7 @@ class ItemResource extends JsonResource
             'category' => $this->category,
             'image_url' => $this->image ? Storage::disk('public')->url($this->image) : null,
             'starting_bid' => $this->starting_bid,
+            'current_bid' => $this->getCurrentBid(),
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_active' => $this->is_active,

@@ -20,7 +20,6 @@ class CommentResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'comment' => $this->comment,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

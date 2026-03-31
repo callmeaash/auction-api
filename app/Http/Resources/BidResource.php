@@ -20,7 +20,6 @@ class BidResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'amount' => $this->amount,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

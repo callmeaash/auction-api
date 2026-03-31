@@ -25,7 +25,6 @@ class UserResource extends JsonResource
             'bio' => $this->bio,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }
