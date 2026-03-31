@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ItemResource;
 use App\Http\Requests\StoreItemRequest;
 use App\Category;
+use App\Http\Requests\UpdateItemRequest;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
+
+
 
 class ItemController extends Controller
 {
@@ -97,7 +102,7 @@ class ItemController extends Controller
     }
 
     /**
-     * Display an item.
+     * Display the item.
      * 
      * @unauthenticated
      * 
@@ -107,7 +112,7 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         $user = auth('sanctum')->user();
-        $item->load('user');
+        $item->load(['user', 'comments.user', 'bids.user']);
 
         if($user){
             $item->loadExists([
@@ -119,19 +124,60 @@ class ItemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the item.
+     * 
+     * @authenticated
+     * 
+     * @param UpdateItemRequest $request Validated item data.
+     * @return JsonResponse Returns the updated item.
      */
-    public function update(Request $request, Item $item)
+    public function update(UpdateItemRequest $request, Item $item)
     {
-        //
+        if (Gate::denies('update', $item)) {
+            return $this->forbidden('Only the owner can update this item.');
+        }
+
+        if ($item->bids()->exists()) {
+            return $this->forbidden(
+                'Item cannot be updated because it has bids'
+            );
+        }
+
+        $validated = $request->validated();
+        if ($request->hasFile('image')) {
+            if ($item->image) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $validated['image'] = $request->file('image')->store('items', 'public');
+        }
+
+        $item->update($validated);
+        return $this->success(new ItemResource($item), 'Item updated successfully');
+
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deletes the item
+     * 
+     * @authenticated
+     * 
+     * @param Item $item The item to delete.
+     * @return JsonResponse Returns a success message.
      */
     public function destroy(Item $item)
     {
-        //
+        if (Gate::denies('delete', $item)) {
+            return $this->forbidden('Only the owner can delete this item.');
+        }
+
+        if ($item->bids()->exists()) {
+            return $this->forbidden(
+                'Item cannot be deleted because it has bids'
+            );
+        }
+
+        $item->delete();
+        return $this->success([], 'Item deleted successfully');
     }
 
     /**

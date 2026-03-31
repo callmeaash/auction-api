@@ -27,6 +27,8 @@ class ItemResource extends JsonResource
             'end_date' => $this->end_date,
             'is_active' => $this->is_active,
             'user' => new UserResource($this->whenLoaded('user')),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+            'bids' => BidResource::collection($this->whenLoaded('bids')),
             'is_favorited' => $this->whenHas('is_favorited', fn() => (bool) $this->is_favorited),
         ];
     }
