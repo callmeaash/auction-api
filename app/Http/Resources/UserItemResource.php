@@ -4,10 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Storage;
 
-class ItemResource extends JsonResource
+class UserItemResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,15 +22,12 @@ class ItemResource extends JsonResource
             'category' => $this->category,
             'image_url' => $this->image ? Storage::disk('public')->url($this->image) : null,
             'starting_bid' => $this->starting_bid,
-            'current_bid' => $this->highestBid ? $this->highestBid->amount : null,
+            'current_bid'  => $this->highestBid ? $this->highestBid->amount : null,
+            'total_bids'   => $this->bids_count,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_active' => $this->is_active,
-            'total_bids' => $this->bids_count,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'comments' => CommentResource::collection($this->whenLoaded('comments')),
-            'bids' => BidResource::collection($this->whenLoaded('bids')),
-            'is_favorited' => $this->whenHas('is_favorited', fn() => (bool) $this->is_favorited),
+            'user_bid' =>$this->whenHas('user_bid', fn() => $this->user_bid),
         ];
     }
 }

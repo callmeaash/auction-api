@@ -20,7 +20,8 @@ class CommentController extends Controller
      * @param Item $item The item to comment on.
      * @return JsonResponse Returns the created comment.
      */
-    public function store(Request $request, Item $item) {
+    public function store(Request $request, Item $item): JsonResource
+    {
         $validated = $request->validate([
             'comment' => 'required|string',
         ]);

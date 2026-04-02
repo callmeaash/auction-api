@@ -60,9 +60,14 @@ class Item extends Model
         return $this->hasOne(Bid::class)->ofMany('amount', 'max');
     }
 
-    public function getCurrentBid(): float 
+    // public function getCurrentBid()
+    // {
+    //     return $this->highestBid? $this->highestBid->amount : $this->starting_bid;
+    // }
+
+    public function getTotalBids(): int
     {
-        return $this->highestBid? $this->highestBid->amount : $this->starting_bid;
+        return $this->bids()->count();
     }
 
     public function wishlistedBy(): BelongsToMany

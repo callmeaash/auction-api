@@ -22,12 +22,24 @@ class BidController extends Controller
      * @return JsonResponse Returns the created bid.
      * 
      */
-    public function store(Request $request, Item $item)
+    public function store(Request $request, Item $item): JsonResponse
     {
+
+        $user = auth('sanctum')->user();
+        if($item->user_id === $user->id) {
+            return $this->forbidden('User cannot bid for their own items');
+        }
+
+        if($item->highestBid) {
+            if($item->highestBid->user_id === $user->id) {
+                return $this->forbidden('User bid is already highest');
+            }
+        }
+
         return DB::transaction(function () use ($request, $item) {
             $item = Item::where('id', $item->id)->lockForUpdate()->first();
 
-            $minBid = $item->highestBid ? ($item->getCurrentBid() + 1) : $item->starting_bid;
+            $minBid = $item->highestBid ? ($item->highestBid->amount + 1) : $item->starting_bid;
 
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:' . $minBid,

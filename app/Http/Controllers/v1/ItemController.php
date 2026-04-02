@@ -28,7 +28,7 @@ class ItemController extends Controller
     {
         $user = auth('sanctum')->user();
         
-        $query = Item::with('user')
+        $query = Item::with(['user'])
             ->when(
                 $request->status === 'ended',
                 fn($q) => $q->where('is_active', false),
@@ -57,7 +57,8 @@ class ItemController extends Controller
             ->when(
                 $request->sort === 'oldest',
                 fn($q) => $q->orderBy('created_at', 'asc')
-            );
+            )
+            ->withCount('bids');
 
         if($user){
             $query->withExists([
@@ -141,7 +142,6 @@ class ItemController extends Controller
                 'Item cannot be updated because it has bids'
             );
         }
-
         $validated = $request->validated();
         if ($request->hasFile('image')) {
             if ($item->image) {

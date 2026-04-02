@@ -27,7 +27,7 @@ class RegisterController extends Controller
     {
         $user = User::create($request->validated());
         $token = $user->createToken('auth_token')->plainTextToken;
-        return $this->success([
+        return $this->created([
             'user' => new UserResource($user),
             'token' => $token
         ], 'User registered successfully');
