@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Comment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
@@ -20,7 +21,7 @@ class CommentController extends Controller
      * @param Item $item The item to comment on.
      * @return JsonResponse Returns the created comment.
      */
-    public function store(Request $request, Item $item): JsonResource
+    public function store(Request $request, Item $item): JsonResponse
     {
         $validated = $request->validate([
             'comment' => 'required|string',
@@ -32,6 +33,10 @@ class CommentController extends Controller
         ]);
 
         $comment->load('user');
+
+        if ($item->user_id !== auth('sanctum')->id()) {
+            NotificationService::notifyNewComment($item, auth('sanctum')->user()->name);
+        }
 
         return $this->success(new CommentResource($comment), 'Comment created successfully');
     }

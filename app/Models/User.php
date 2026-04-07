@@ -15,6 +15,7 @@ use App\Models\Bid;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Comment;
 use App\Models\Report;
+use App\Models\Notifications;
 
 class User extends Authenticatable
 {
@@ -75,5 +76,10 @@ class User extends Authenticatable
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notifications::class);
     }
 }

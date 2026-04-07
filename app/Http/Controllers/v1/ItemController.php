@@ -98,7 +98,7 @@ class ItemController extends Controller
 
         $validated['end_date'] = now()->addDays((int) $request->duration);
         $item = Item::create($validated);
-        return $this->success(new ItemResource($item), 'Item created successfully');
+        return $this->created(new ItemResource($item), 'Item created successfully');
     }
 
     /**

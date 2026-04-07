@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reverb Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.0/dist/echo.iife.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
+</head>
+<body>
+    <h1>Bidding Real-time Feed (Item #1)</h1>
+    <ul id="bids"></ul>
+
+    <script>
+        // Configure Echo to talk to Reverb
+        const echo = new Echo({
+            broadcaster: 'reverb',
+            key: '2drieji4ku1dodaatpeg',
+            wsHost: 'localhost',
+            wsPort: 8080,
+            forceTLS: false,
+            enabledTransports: ['ws', 'wss'],
+        });
+
+        // Listen for the BidPlaced event on items.1 channel
+        echo.channel('items.1')
+            .listen('BidPlaced', (e) => {
+                console.log('New Bid Received:', e);
+                const li = document.createElement('li');
+                li.innerText = `New bid: $${e.amount} by ${e.user.name}`;
+                document.getElementById('bids').appendChild(li);
+            });
+    </script>
+</body>
+</html>

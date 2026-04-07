@@ -4,9 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\ItemResource;
 
-class BidResource extends JsonResource
+class NotificationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,11 @@ class BidResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'amount' => (double) $this->amount,
+            'type' => $this->type,
+            'title' => $this->title,
+            'message' => $this->message,
+            'is_read' => $this->is_read,
+            'item' => new ItemResource($this->whenLoaded('item')),
             'created_at' => $this->created_at,
         ];
     }

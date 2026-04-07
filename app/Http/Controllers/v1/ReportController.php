@@ -7,15 +7,25 @@ use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Http\Resources\ReportResource;
 use App\Models\Item;
+use Illuminate\Http\JsonResponse;
+
 
 class ReportController extends Controller
 {
-    public function store(Request $request, Item $item)
+
+    /**
+     * Store the report
+     * 
+     * @authenticated
+     * 
+     * @return JsonResponse Returns the created report.
+     */
+    public function store(Request $request, Item $item): JsonResponse
     {
 
         $user_id = auth('sanctum')->user()->id;
         
-        if($item->user_id == $user_id){
+        if($item->user_id === $user_id){
             return $this->forbidden('You cannot report your own item');
         }
 

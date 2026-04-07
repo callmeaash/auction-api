@@ -13,6 +13,7 @@ use App\Models\Comment;
 use App\Models\Bid;
 use App\Models\Report;
 use App\Category;
+use App\Models\Notifications;
 
 class Item extends Model
 {
@@ -28,6 +29,8 @@ class Item extends Model
         'starting_bid',
         'start_date',
         'end_date',
+        'is_active',
+        'winner_id',
     ];
 
     protected $casts = [
@@ -60,11 +63,6 @@ class Item extends Model
         return $this->hasOne(Bid::class)->ofMany('amount', 'max');
     }
 
-    // public function getCurrentBid()
-    // {
-    //     return $this->highestBid? $this->highestBid->amount : $this->starting_bid;
-    // }
-
     public function getTotalBids(): int
     {
         return $this->bids()->count();
@@ -83,5 +81,10 @@ class Item extends Model
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notifications::class);
     }
 }

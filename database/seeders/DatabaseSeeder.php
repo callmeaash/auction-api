@@ -8,6 +8,7 @@ use App\Models\Wishlist;
 use App\Models\Bid;
 use App\Models\Comment;
 use App\Models\Report;
+use App\Models\Notifications;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,5 +27,6 @@ class DatabaseSeeder extends Seeder
         Bid::factory(10)->recycle($users)->recycle($items)->create();
         Comment::factory(10)->recycle($users)->recycle($items)->create();
         Report::factory(10)->recycle($users)->recycle($items)->create();
+        Notifications::factory(10)->recycle($users)->recycle($items)->create();
     }
 }

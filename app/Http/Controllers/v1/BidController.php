@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BidResource;
 use App\Models\Item;
+use App\Services\NotificationService;
+use App\Events\BidPlaced;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +28,11 @@ class BidController extends Controller
     {
 
         $user = auth('sanctum')->user();
+
+        if(!$item->is_active) {
+            return $this->forbidden('This auction has ended');
+        }
+
         if($item->user_id === $user->id) {
             return $this->forbidden('User cannot bid for their own items');
         }
@@ -39,6 +46,8 @@ class BidController extends Controller
         return DB::transaction(function () use ($request, $item) {
             $item = Item::where('id', $item->id)->lockForUpdate()->first();
 
+            $previousHighestBidder = $item->highestBid ? $item->highestBid->user_id : null;
+
             $minBid = $item->highestBid ? ($item->highestBid->amount + 1) : $item->starting_bid;
 
             $validated = $request->validate([
@@ -51,6 +60,17 @@ class BidController extends Controller
             ]);
 
             $bid->load('user');
+
+            // Dispatch event for real-time bidding updates
+            broadcast(new BidPlaced($bid))->toOthers();
+
+            if ($previousHighestBidder) {
+                NotificationService::notifyOutbid(
+                    $previousHighestBidder,
+                    $item,
+                    $validated['amount']
+                );
+            }
 
             return $this->success(new BidResource($bid), 'Bid created successfully');
         });

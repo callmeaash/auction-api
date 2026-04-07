@@ -10,6 +10,7 @@ use App\Http\Controllers\v1\BidController;
 use App\Http\Controllers\v1\WishlistController;
 use App\Http\Controllers\v1\ProfileController;
 use App\Http\Controllers\v1\ReportController;
+use App\Http\Controllers\v1\NotificationController;
 
 Route::prefix('v1')->group(function () {
 
@@ -33,5 +34,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/profile/items', [ProfileController::Class, 'items']);
         Route::get('/profile/bids', [ProfileController::Class, 'bids']);
         Route::get('/profile/wishlist', [ProfileController::Class, 'wishlist']);
+
+        //Notification Routes
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/read-all', [NotificationController::class, 'readAll']);
+        Route::delete('/notifications/delete-all', [NotificationController::class, 'deleteAll']);
+        Route::get('/notifications/{notification}', [NotificationController::class, 'show']);
+        Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read']);
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'delete']);
     });
 });
